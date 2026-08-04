@@ -31,6 +31,20 @@ describe('settings', function ( ) {
     settings.insecureUseHttp.should.equal(false);
     settings.secureHstsHeader.should.equal(true);
     settings.secureCsp.should.equal(false);
+    settings.icpNumber.should.equal('');
+  });
+  it('read icpNumber from ICP_NUMBER env var', function () {
+    var fresh = require('../lib/settings')();
+    fresh.eachSettingAsEnv(function (name) {
+      return name === 'ICP_NUMBER' ? '黔ICP备12345678号' : undefined;
+    });
+    fresh.icpNumber.should.equal('黔ICP备12345678号');
+
+    var unset = require('../lib/settings')();
+    unset.eachSettingAsEnv(function () {
+      return undefined;
+    });
+    unset.icpNumber.should.equal('');
   });
   it('support setting from env vars', function () {
     var expected = [
